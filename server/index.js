@@ -153,6 +153,10 @@ app.use((req, res, next) => {
     next();
 });
 
-app.listen(port, () => {
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
-});
+  });
+}
+
+export default app;
