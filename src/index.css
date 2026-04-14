@@ -137,25 +137,64 @@ a:hover {
 }
 
 @media (max-width: 768px) {
+  /* Container Padding */
+  .container {
+    padding: 0 25px;
+  }
+
+  /* Hero Section */
   .hero h1 {
-    font-size: 3rem !important;
+    font-size: 2.8rem !important;
+    line-height: 1.2;
   }
   .hero p {
     font-size: 1rem !important;
   }
-  #booking .container > div {
+
+  /* Universal Stacking & Wrapping */
+  #booking .container > div,
+  #pitch .container > div,
+  #location .container > div,
+  #amenities .container > div:nth-child(2),
+  .hero .container > div > div:last-child,
+  #pitch .container > div > div:first-child > div:last-child {
     grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+    gap: 30px !important;
   }
-  #pitch .container > div {
-    grid-template-columns: 1fr !important;
+
+  /* Wrap internal flex items */
+  #pitch .container div[style*="display: flex"],
+  .hero .container div[style*="display: flex"],
+  #location .container div[style*="display: flex"] {
+    flex-wrap: wrap !important;
+    gap: 15px !important;
   }
-  #location .container > div {
-    grid-template-columns: 1fr !important;
+
+  /* Feature Card Fix */
+  #pitch [style*="flex: 1"] {
+    flex: none !important;
+    width: 100% !important;
   }
+
+  /* Amenities Stacking Fix */
+  #amenities .container > div:nth-child(2) > div {
+    flex: none !important;
+    width: 100% !important;
+  }
+
+  /* Slot Grid Adjustment */
   .slot-grid {
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
   }
-  nav .container div:nth-child(2) {
-      display: none !important;
+
+  /* Mobile Navbar Drawer (Internal Logic handled in JSX) */
+  .mobile-nav-active {
+    overflow: hidden; /* Prevent scrolling when menu is open */
+  }
+
+  .glass {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
   }
 }
