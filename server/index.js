@@ -35,13 +35,32 @@ const adminAuth = (req, res, next) => {
     }
 };
 
-// Get slots for a specific date
+// Get slots for a specific date (Auto-generates if missing)
 app.get('/api/slots', async (req, res) => {
     const { date } = req.query;
     if (!date) return res.status(400).json({ error: 'Date is required' });
 
     try {
-        const result = await db.query('SELECT * FROM slots WHERE date = $1', [date]);
+        // 1. Fetch existing slots
+        let result = await db.query('SELECT * FROM slots WHERE date = $1 ORDER BY time ASC', [date]);
+        
+        // 2. If slots are missing or incomplete (less than 24), generate them
+        if (result.rows.length < 24) {
+            const times = [];
+            for (let h = 0; h < 24; h++) {
+                times.push(`${h.toString().padStart(2, '0')}:00`);
+            }
+
+            for (const time of times) {
+                await db.query(
+                    'INSERT INTO slots (date, time, status) VALUES ($1, $2, $3) ON CONFLICT (date, time) DO NOTHING',
+                    [date, time, 'available']
+                );
+            }
+            // Re-fetch after generation
+            result = await db.query('SELECT * FROM slots WHERE date = $1 ORDER BY time ASC', [date]);
+        }
+
         res.json(result.rows);
     } catch (err) {
         res.status(500).json({ error: err.message });

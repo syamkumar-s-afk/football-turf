@@ -143,10 +143,10 @@ a:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  font-size: 1rem;
+  gap: 2px;
+  font-size: 0.85rem;
   font-weight: 700;
-  padding: 8px;
+  padding: 4px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -154,6 +154,7 @@ a:hover {
   .slot {
     aspect-ratio: 2/1;
     font-size: 0.9rem;
+    padding: 12px;
   }
 }
 
@@ -171,27 +172,34 @@ a:hover {
 .slot.selected {
   background-color: var(--primary);
   color: #fff;
-  box-shadow: 0 0 20px rgba(0, 210, 106, 0.4);
+  box-shadow: 0 0 15px rgba(0, 210, 106, 0.4);
   border-color: var(--primary);
 }
 
 .slot span {
   display: none; /* Hide status label for calendar layout */
-  font-size: 0.65rem;
-  font-weight: 800;
-  opacity: 0.7;
 }
 
 @media (min-width: 1024px) {
   .slot span {
     display: block;
+    font-size: 0.65rem;
+    font-weight: 800;
+    opacity: 0.7;
   }
 }
 
 .slot-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr); /* Force 4 columns on mobile */
+  gap: 8px;
+}
+
+@media (min-width: 1024px) {
+  .slot-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+  }
 }
 
 /* Glass Effect */
