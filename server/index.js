@@ -16,7 +16,11 @@ app.use(express.json());
 let db;
 
 (async () => {
-    db = await initDb();
+    try {
+        db = await initDb();
+    } catch (err) {
+        console.error('Database initialization failed:', err);
+    }
 })();
 
 const ADMIN_PASSWORD = 'admin123';
@@ -37,8 +41,8 @@ app.get('/api/slots', async (req, res) => {
     if (!date) return res.status(400).json({ error: 'Date is required' });
 
     try {
-        const slots = await db.all('SELECT * FROM slots WHERE date = ?', [date]);
-        res.json(slots);
+        const result = await db.query('SELECT * FROM slots WHERE date = $1', [date]);
+        res.json(result.rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -47,8 +51,8 @@ app.get('/api/slots', async (req, res) => {
 // Admin: Get all booking inquiries
 app.get('/api/admin/bookings', adminAuth, async (req, res) => {
     try {
-        const bookings = await db.all('SELECT * FROM bookings ORDER BY created_at DESC');
-        res.json(bookings);
+        const result = await db.query('SELECT * FROM bookings ORDER BY created_at DESC');
+        res.json(result.rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -60,16 +64,15 @@ app.post('/api/book', async (req, res) => {
     if (!date || !time) return res.status(400).json({ error: 'Date and time are required' });
 
     try {
-        const slot = await db.get('SELECT * FROM slots WHERE date = ? AND time = ?', [date, time]);
+        const result = await db.query('SELECT * FROM slots WHERE date = $1 AND time = $2', [date, time]);
+        const slot = result.rows[0];
         
         if (!slot || slot.status !== 'available') {
             return res.status(400).json({ error: 'Slot is not available' });
         }
 
-        // Removed automatic status update: Only admin can book slots manually now.
-        // await db.run('UPDATE slots SET status = "booked" WHERE date = ? AND time = ?', [date, time]);
-        await db.run(
-            'INSERT INTO bookings (user_id, user_name, user_phone, sport, date, time) VALUES (?, ?, ?, ?, ?, ?)', 
+        await db.query(
+            'INSERT INTO bookings (user_id, user_name, user_phone, sport, date, time) VALUES ($1, $2, $3, $4, $5, $6)', 
             [userId || 'anonymous', req.body.userName, req.body.userPhone, req.body.sport, date, time]
         );
 
@@ -95,7 +98,7 @@ app.post('/api/admin/slots/toggle', adminAuth, async (req, res) => {
     if (!date || !time || !status) return res.status(400).json({ error: 'Missing parameters' });
 
     try {
-        await db.run('UPDATE slots SET status = ? WHERE date = ? AND time = ?', [status, date, time]);
+        await db.query('UPDATE slots SET status = $1 WHERE date = $2 AND time = $3', [status, date, time]);
         res.json({ success: true, message: `Slot status updated to ${status}` });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -108,8 +111,9 @@ app.post('/api/admin/slots/bulk', adminAuth, async (req, res) => {
     if (!date || !slots || !status) return res.status(400).json({ error: 'Missing parameters' });
 
     try {
-        const placeholders = slots.map(() => '?').join(',');
-        await db.run(`UPDATE slots SET status = ? WHERE date = ? AND time IN (${placeholders})`, [status, date, ...slots]);
+        const placeholders = slots.map((_, i) => `$${i + 3}`).join(',');
+        const query = `UPDATE slots SET status = $1 WHERE date = $2 AND time IN (${placeholders})`;
+        await db.query(query, [status, date, ...slots]);
         res.json({ success: true, message: 'Slots updated successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
