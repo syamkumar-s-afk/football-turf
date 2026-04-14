@@ -31,10 +31,10 @@ async function initDb() {
         `);
 
         // Pre-generate some slots for the next 7 days if they don't exist
-        const times = [
-            '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
-            '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
-        ];
+        const times = [];
+        for (let h = 0; h < 24; h++) {
+          times.push(`${h.toString().padStart(2, '0')}:00`);
+        }
 
         const today = new Date();
         for (let i = 0; i < 7; i++) {

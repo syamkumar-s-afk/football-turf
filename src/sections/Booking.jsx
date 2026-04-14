@@ -135,8 +135,8 @@ const Booking = () => {
 
             <div className="slot-grid">
               {loading && !showModal ? (
-                Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} style={{ height: 70, background: '#eee', borderRadius: 8, animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+                Array.from({ length: 12 }).map((_, i) => (
+                  <div key={i} style={{ aspectRatio: '1/1', background: 'rgba(255,255,255,0.05)', borderRadius: 12, animation: 'pulse 1.5s infinite ease-in-out' }}></div>
                 ))
               ) : (
                 slots.map((slot) => {
