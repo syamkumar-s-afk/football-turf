@@ -112,6 +112,19 @@ app.post('/api/admin/slots/bulk', adminAuth, async (req, res) => {
     }
 });
 
+const port = process.env.PORT || 5000;
+
+// Host Static Files (Production)
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+
+// ... existing routes ...
+
+// SPA Catch-all: All other requests go to index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+});
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });

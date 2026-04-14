@@ -20,7 +20,7 @@ const Admin = ({ adminPass, onLogout }) => {
 
   const fetchSlots = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/slots?date=${selectedDate}`);
+      const res = await axios.get(`/api/slots?date=${selectedDate}`);
       setSlots(res.data);
     } catch (err) {
       console.error(err);
@@ -29,7 +29,7 @@ const Admin = ({ adminPass, onLogout }) => {
 
   const fetchBookings = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/bookings', {
+      const res = await axios.get('/api/admin/bookings', {
         headers: { 'x-admin-password': adminPass }
       });
       setBookings(res.data);
@@ -41,7 +41,7 @@ const Admin = ({ adminPass, onLogout }) => {
   const toggleStatus = async (time, currentStatus) => {
     const nextStatus = currentStatus === 'available' ? 'blocked' : 'available';
     try {
-      await axios.post('http://localhost:5000/api/admin/slots/toggle', {
+      await axios.post('/api/admin/slots/toggle', {
         date: selectedDate,
         time,
         status: nextStatus
@@ -56,7 +56,7 @@ const Admin = ({ adminPass, onLogout }) => {
 
   const bulkUpdate = async (status) => {
     try {
-      await axios.post('http://localhost:5000/api/admin/slots/bulk', {
+      await axios.post('/api/admin/slots/bulk', {
         date: selectedDate,
         slots: slots.map(s => s.time),
         status

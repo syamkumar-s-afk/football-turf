@@ -1,14 +1,24 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function initDb() {
+    // Priority: DB_PATH env > local data folder > local root (dev)
+    const dbPath = process.env.DB_PATH || path.join(__dirname, 'database.sqlite');
+    
+    // Ensure directory exists
+    const dbDir = path.dirname(dbPath);
+    if (!fs.existsSync(dbDir)) {
+        fs.mkdirSync(dbDir, { recursive: true });
+    }
+
     const db = await open({
-        filename: path.join(__dirname, 'database.sqlite'),
+        filename: dbPath,
         driver: sqlite3.Database
     });
 

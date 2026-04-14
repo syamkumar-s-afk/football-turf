@@ -13,7 +13,7 @@ const Login = ({ onLogin }) => {
     setError('');
     
     try {
-      const res = await axios.post('http://localhost:5000/api/admin/login', { password });
+      const res = await axios.post('/api/admin/login', { password });
       if (res.data.success) {
         onLogin(password);
       }

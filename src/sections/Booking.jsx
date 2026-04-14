@@ -26,7 +26,7 @@ const Booking = () => {
   const fetchSlots = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/slots?date=${selectedDate}`);
+      const res = await axios.get(`/api/slots?date=${selectedDate}`);
       setSlots(res.data);
     } catch (err) {
       console.error('Error fetching slots:', err);
@@ -38,7 +38,7 @@ const Booking = () => {
     if (!selectedSlot) return;
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/book', {
+      const res = await axios.post('/api/book', {
         date: selectedDate,
         time: selectedSlot.time,
         userName: userData.name,

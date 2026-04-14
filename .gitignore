@@ -23,6 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# Database and Scratch
 server/database.sqlite
 scratch/
