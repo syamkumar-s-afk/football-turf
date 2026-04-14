@@ -77,50 +77,63 @@ const Booking = () => {
   };
 
   return (
-    <section id="booking" style={{ padding: '100px 0', background: '#fff', color: '#000', position: 'relative' }}>
+    <section id="booking" style={{ padding: '80px 0', background: 'var(--bg-dark)' }}>
       <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '40px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+          <span style={{ color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.75rem' }}>Reserve Your Game</span>
+          <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', fontWeight: 800, marginTop: '12px' }}>Check Availability</h2>
+        </div>
+
+        <div className="section-grid">
           {/* Left Panel */}
-          <div>
-            <h2 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '20px' }}>Secure Your Session</h2>
-            <p style={{ color: '#666', marginBottom: '40px' }}>Select your preferred date and time. Prime slots fill up fast.</p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div className="glass" style={{ padding: '20px', borderRadius: '12px', border: '1px solid #eee', background: '#f9f9f9', display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <Calendar size={24} color="var(--primary)" />
-                <div>
-                  <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#999', fontWeight: 700 }}>Current Date</label>
-                  <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    style={{ border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 600, width: '100%', outline: 'none' }}
-                  />
-                </div>
+          <div className="flex-stack" style={{ gap: '24px' }}>
+            <div className="glass" style={{ padding: '24px', borderRadius: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+                <Calendar color="var(--primary)" size={24} />
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Select Date</h3>
               </div>
+              <input 
+                type="date" 
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="glass"
+                style={{ 
+                  width: '100%', 
+                  padding: '16px', 
+                  borderRadius: '12px', 
+                  color: '#fff', 
+                  fontSize: '1rem',
+                  outline: 'none',
+                  cursor: 'pointer',
+                  background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.1)'
+                }}
+              />
+            </div>
 
-              <div className="glass" style={{ padding: '20px', borderRadius: '12px', border: '1px solid #eee', background: '#f9f9f9', display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <Clock size={24} color="var(--primary)" />
-                <div>
-                  <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#999', fontWeight: 700 }}>Session Length</label>
-                  <div style={{ fontSize: '1rem', fontWeight: 600 }}>60 Minutes</div>
-                </div>
+            <div className="glass" style={{ padding: '24px', borderRadius: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+                <Clock color="var(--primary)" size={24} />
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Booking Info</h3>
               </div>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Select a slot to start your inquiry. Admin will confirm your booking via WhatsApp.
+              </p>
             </div>
           </div>
 
           {/* Right Panel */}
-          <div style={{ background: '#f4f4f5', padding: '40px', borderRadius: '24px', position: 'relative' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Today's Availability</h3>
-              <div style={{ display: 'flex', gap: '15px', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ccc' }}></div> Available</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#eee' }}></div> Booked</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--primary)' }}></div> Selected</span>
+          <div className="glass" style={{ padding: '32px', borderRadius: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '16px' }}>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Available Slots</h3>
+              <div style={{ display: 'flex', gap: '12px', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: 8, height: 8, borderRadius: '2px', background: '#e4e4e7' }}></div> Avail</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: 8, height: 8, borderRadius: '2px', background: 'rgba(255,255,255,0.1)' }}></div> Booked</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: 8, height: 8, borderRadius: '2px', background: 'var(--primary)' }}></div> Selected</span>
               </div>
             </div>
 
-            <div className="slot-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '15px' }}>
+            <div className="slot-grid">
               {loading && !showModal ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} style={{ height: 70, background: '#eee', borderRadius: 8, animation: 'pulse 1.5s infinite ease-in-out' }}></div>

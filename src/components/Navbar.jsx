@@ -77,34 +77,14 @@ const Navbar = () => {
 
         {/* Mobile Menu Overlay */}
         {isMenuOpen && (
-          <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100vh',
-            background: 'var(--bg-dark)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '30px',
-            zIndex: 2100
-          }}>
-            <a href="#pitch" onClick={closeMenu} style={{ color: '#fff', fontSize: '2rem', textDecoration: 'none', fontWeight: 700 }}>The Pitch</a>
-            <a href="#amenities" onClick={closeMenu} style={{ color: '#fff', fontSize: '2rem', textDecoration: 'none', fontWeight: 700 }}>Amenities</a>
-            <a href="#location" onClick={closeMenu} style={{ color: '#fff', fontSize: '2rem', textDecoration: 'none', fontWeight: 700 }}>Location</a>
-            <a href="#booking" onClick={closeMenu} className="btn btn-primary" style={{ fontSize: '1.5rem', padding: '15px 40px' }}>Book Now</a>
+          <div className="mobile-nav-drawer">
+            <a href="#pitch" onClick={closeMenu} style={{ color: '#fff', fontSize: '2rem', textDecoration: 'none', fontWeight: 800 }}>The Pitch</a>
+            <a href="#amenities" onClick={closeMenu} style={{ color: '#fff', fontSize: '2rem', textDecoration: 'none', fontWeight: 800 }}>Amenities</a>
+            <a href="#location" onClick={closeMenu} style={{ color: '#fff', fontSize: '2rem', textDecoration: 'none', fontWeight: 800 }}>Location</a>
+            <a href="#booking" onClick={closeMenu} className="btn btn-primary" style={{ fontSize: '1.5rem', padding: '16px 48px', width: 'auto' }}>Book Now</a>
           </div>
         )}
       </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .nav-desktop { display: none !important; }
-          .nav-mobile-toggle { display: block !important; }
-        }
-      `}</style>
     </nav>
   );
 };

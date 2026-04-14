@@ -32,9 +32,10 @@ h1, h2, h3, h4 {
 }
 
 .container {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
 }
 
 button {
@@ -42,24 +43,35 @@ button {
   border: none;
   font-family: inherit;
   transition: all 0.2s ease;
+  min-height: 44px; /* Mobile touch target */
 }
 
 a {
-    transition: color 0.2s ease;
+  transition: color 0.2s ease;
+  text-decoration: none;
 }
 
 a:hover {
-    color: var(--primary) !important;
+  color: var(--primary) !important;
 }
 
+/* Button System */
 .btn {
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 14px 28px;
+  border-radius: 12px;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  text-decoration: none;
+  justify-content: center;
+  gap: 10px;
+  width: 100%; /* Full width on mobile */
+  font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+  .btn {
+    width: auto;
+  }
 }
 
 .btn-primary {
@@ -73,20 +85,60 @@ a:hover {
 }
 
 .btn-secondary {
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.05);
   color: #fff !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: #fff;
+/* Grid Layouts (Mobile First) */
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.flex-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 1024px) {
+  .section-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+  .section-grid-wide {
+    grid-template-columns: 1.2fr 1fr;
+  }
+  .flex-stack {
+    flex-direction: row;
+    gap: 40px;
+  }
+}
+
+/* Hero Section */
+.hero-content {
+  text-align: center;
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  line-height: 1.1;
+  margin: 20px 0;
+}
+
+@media (min-width: 1024px) {
+  .hero-content {
+    text-align: left;
+  }
 }
 
 /* Slot Styles */
 .slot {
   aspect-ratio: 2/1;
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -101,11 +153,6 @@ a:hover {
   color: #18181b;
 }
 
-.slot.available:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 210, 106, 0.3);
-}
-
 .slot.booked {
   background-color: var(--slot-available);
   opacity: 0.4;
@@ -116,14 +163,21 @@ a:hover {
 .slot.selected {
   background-color: var(--primary);
   color: #fff;
-  transform: scale(1.05);
-  box-shadow: 0 0 15px var(--primary);
+  box-shadow: 0 0 20px rgba(0, 210, 106, 0.4);
 }
 
-.slot span {
-  font-size: 0.7rem;
-  font-weight: 500;
-  opacity: 0.8;
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+/* Glass Effect */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Animations */
@@ -136,65 +190,40 @@ a:hover {
   animation: fadeIn 0.8s ease-out forwards;
 }
 
-@media (max-width: 768px) {
-  /* Container Padding */
-  .container {
-    padding: 0 25px;
-  }
+.mobile-nav-active {
+  overflow: hidden;
+}
 
-  /* Hero Section */
-  .hero h1 {
-    font-size: 2.8rem !important;
-    line-height: 1.2;
-  }
-  .hero p {
-    font-size: 1rem !important;
-  }
+/* Navbar Classes */
+.nav-desktop {
+  display: none;
+}
 
-  /* Universal Stacking & Wrapping */
-  #booking .container > div,
-  #pitch .container > div,
-  #location .container > div,
-  #amenities .container > div:nth-child(2),
-  .hero .container > div > div:last-child,
-  #pitch .container > div > div:first-child > div:last-child {
-    grid-template-columns: 1fr !important;
-    flex-direction: column !important;
-    gap: 30px !important;
-  }
+.nav-mobile-toggle {
+  display: block;
+}
 
-  /* Wrap internal flex items */
-  #pitch .container div[style*="display: flex"],
-  .hero .container div[style*="display: flex"],
-  #location .container div[style*="display: flex"] {
-    flex-wrap: wrap !important;
-    gap: 15px !important;
+@media (min-width: 1024px) {
+  .nav-desktop {
+    display: flex;
   }
+  .nav-mobile-toggle {
+    display: none;
+  }
+}
 
-  /* Feature Card Fix */
-  #pitch [style*="flex: 1"] {
-    flex: none !important;
-    width: 100% !important;
-  }
-
-  /* Amenities Stacking Fix */
-  #amenities .container > div:nth-child(2) > div {
-    flex: none !important;
-    width: 100% !important;
-  }
-
-  /* Slot Grid Adjustment */
-  .slot-grid {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
-  }
-
-  /* Mobile Navbar Drawer (Internal Logic handled in JSX) */
-  .mobile-nav-active {
-    overflow: hidden; /* Prevent scrolling when menu is open */
-  }
-
-  .glass {
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-  }
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: var(--bg-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  z-index: 2100;
+  padding: 24px;
 }

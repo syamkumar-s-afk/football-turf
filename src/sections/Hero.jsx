@@ -22,37 +22,32 @@ const Hero = () => {
       }}></div>
 
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-        <div className="fade-in">
+        <div className="fade-in hero-content">
           <span style={{ 
             backgroundColor: 'var(--primary)', 
             color: '#000', 
-            padding: '4px 12px', 
-            borderRadius: '20px', 
-            fontSize: '0.8rem', 
-            fontWeight: 700,
+            padding: '6px 16px', 
+            borderRadius: '24px', 
+            fontSize: '0.75rem', 
+            fontWeight: 800,
             textTransform: 'uppercase',
-            letterSpacing: '1px'
+            letterSpacing: '1.5px'
           }}>
             • Live Availability
           </span>
-          <h1 style={{ 
-            fontSize: '5rem', 
-            fontWeight: 800, 
-            marginTop: '20px', 
-            maxWidth: '800px',
-            lineHeight: 1.1 
-          }}>
+          <h1 className="hero-title">
             Your Premier <span style={{ color: 'var(--primary)' }}>Pitch</span> Awaits
           </h1>
           <p style={{ 
-            fontSize: '1.2rem', 
+            fontSize: 'clamp(1rem, 4vw, 1.25rem)', 
             color: 'var(--text-muted)', 
             maxWidth: '600px', 
-            margin: '30px 0' 
+            margin: '24px 0 40px',
+            lineHeight: 1.6
           }}>
             Experience the stadium sanctuary at Wembley Arena A. Professional grade turf for the ultimate game.
           </p>
-          <div style={{ display: 'flex', gap: '20px' }}>
+          <div className="flex-stack" style={{ alignItems: 'center' }}>
             <a href="#booking" className="btn btn-primary">Book a Slot</a>
             <a href="#pitch" className="btn btn-secondary">View Pitch Details</a>
           </div>
