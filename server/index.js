@@ -1,10 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import { initDb } from './initDb.js';
+import { fileURLToPath } from 'url';
 import path from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
@@ -112,8 +116,6 @@ app.post('/api/admin/slots/bulk', adminAuth, async (req, res) => {
     }
 });
 
-const port = process.env.PORT || 5000;
-
 // Host Static Files (Production)
 const distPath = path.join(__dirname, '../dist');
 app.use(express.static(distPath));
@@ -121,8 +123,11 @@ app.use(express.static(distPath));
 // ... existing routes ...
 
 // SPA Catch-all: All other requests go to index.html
-app.get('*', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
+app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.path.startsWith('/api')) {
+        return res.sendFile(path.join(distPath, 'index.html'));
+    }
+    next();
 });
 
 app.listen(port, () => {

@@ -37,12 +37,18 @@ const Booking = () => {
   const handleBooking = async () => {
     if (!selectedSlot) return;
     setLoading(true);
+
+    let normalizedPhone = userData.phone.replace(/\s/g, '');
+    if (/^\d{10}$/.test(normalizedPhone)) {
+      normalizedPhone = `+91${normalizedPhone}`;
+    }
+
     try {
       const res = await axios.post('/api/book', {
         date: selectedDate,
         time: selectedSlot.time,
         userName: userData.name,
-        userPhone: userData.phone,
+        userPhone: normalizedPhone,
         sport: userData.sport
       });
 
@@ -51,7 +57,7 @@ const Booking = () => {
         const message = encodeURIComponent(
           `*New Turf Booking* ⚽🏏\n\n` +
           `- Name: ${userData.name}\n` +
-          `- Phone: ${userData.phone}\n` +
+          `- Phone: ${normalizedPhone}\n` +
           `- Sport: ${userData.sport}\n` +
           `- Date: ${selectedDate}\n` +
           `- Slot: ${selectedSlot.time}`
@@ -248,7 +254,7 @@ const Booking = () => {
                 </button>
                 <button
                   onClick={handleBooking}
-                  disabled={!userData.name || !/^\+91\d{10}$/.test(userData.phone.replace(/\s/g, '')) || loading}
+                  disabled={!userData.name || !(/^\+91\d{10}$/.test(userData.phone.replace(/\s/g, '')) || /^\d{10}$/.test(userData.phone.replace(/\s/g, ''))) || loading}
                   className="btn btn-primary"
                   style={{ flex: 2, justifyContent: 'center' }}
                 >
