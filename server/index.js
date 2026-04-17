@@ -12,6 +12,11 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 5000;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+
+console.log(`--- Server Starting ---`);
+console.log(`Mode: ${process.env.NODE_ENV || 'development'}`);
+console.log(`Port: ${port}`);
 
 app.use(cors());
 app.use(express.json());

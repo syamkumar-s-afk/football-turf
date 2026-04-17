@@ -39,7 +39,11 @@ const Booking = () => {
     setError(null);
     try {
       const res = await axios.get(`/api/slots?date=${selectedDate}`);
-      setSlots(res.data);
+      if (Array.isArray(res.data)) {
+        setSlots(res.data);
+      } else {
+        throw new Error('Server returned invalid data format');
+      }
     } catch (err) {
       console.error('Error fetching slots:', err);
       const msg = err.response?.data?.error || err.response?.data?.dbStatus === 'FAILED' 
@@ -160,7 +164,7 @@ const Booking = () => {
                   <button onClick={fetchSlots} style={{ marginTop: '15px', background: 'transparent', color: 'var(--primary)', fontWeight: 700, textDecoration: 'underline' }}>Try Again</button>
                 </div>
               ) : (
-                slots.map((slot) => {
+                Array.isArray(slots) && slots.map((slot) => {
                   const isSelected = selectedSlot?.id === slot.id;
                   const isBooked = slot.status === 'booked' || slot.status === 'blocked';
 

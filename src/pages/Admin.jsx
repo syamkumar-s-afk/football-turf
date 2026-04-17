@@ -37,7 +37,7 @@ const Admin = ({ adminPass, onLogout }) => {
   const fetchSlots = async () => {
     try {
       const res = await axios.get(`/api/slots?date=${selectedDate}`);
-      setSlots(res.data);
+      if (Array.isArray(res.data)) setSlots(res.data);
     } catch (err) {
       console.error(err);
     }
@@ -48,7 +48,7 @@ const Admin = ({ adminPass, onLogout }) => {
       const res = await axios.get('/api/admin/bookings', {
         headers: { 'x-admin-password': adminPass }
       });
-      setBookings(res.data);
+      if (Array.isArray(res.data)) setBookings(res.data);
     } catch (err) {
       console.error(err);
     }
@@ -123,7 +123,7 @@ const Admin = ({ adminPass, onLogout }) => {
               </tr>
             </thead>
             <tbody>
-              {slots.map(slot => (
+              {Array.isArray(slots) && slots.map(slot => (
                 <tr key={slot.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                   <td style={{ padding: '20px 10px', fontWeight: 600 }}>{formatAMPM(slot.time)}</td>
                   <td style={{ padding: '20px 10px' }}>
@@ -174,7 +174,7 @@ const Admin = ({ adminPass, onLogout }) => {
               </tr>
             </thead>
             <tbody>
-              {bookings.length === 0 ? (
+              {!Array.isArray(bookings) || bookings.length === 0 ? (
                 <tr>
                   <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No inquiries found.</td>
                 </tr>
