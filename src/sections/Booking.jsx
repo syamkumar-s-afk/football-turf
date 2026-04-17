@@ -8,6 +8,7 @@ const Booking = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   // User Details State
   const [showModal, setShowModal] = useState(false);
@@ -19,17 +20,32 @@ const Booking = () => {
 
   const OWNER_PHONE = '+911234567890'; // Placeholder
 
+  const formatAMPM = (timeStr) => {
+    if (!timeStr) return '';
+    const [hours, minutes] = timeStr.split(':');
+    let h = parseInt(hours, 10);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    h = h ? h : 12; // the hour '0' should be '12'
+    return `${h.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+  };
+
   useEffect(() => {
     fetchSlots();
   }, [selectedDate]);
 
   const fetchSlots = async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await axios.get(`/api/slots?date=${selectedDate}`);
       setSlots(res.data);
     } catch (err) {
       console.error('Error fetching slots:', err);
+      const msg = err.response?.data?.error || err.response?.data?.dbStatus === 'FAILED' 
+        ? `Database Error: ${err.response.data.error || 'Connection failed'}` 
+        : 'Unable to load slots. Please check your connection or try again later.';
+      setError(msg);
     }
     setLoading(false);
   };
@@ -60,7 +76,7 @@ const Booking = () => {
           `- Phone: ${normalizedPhone}\n` +
           `- Sport: ${userData.sport}\n` +
           `- Date: ${selectedDate}\n` +
-          `- Slot: ${selectedSlot.time}`
+          `- Slot: ${formatAMPM(selectedSlot.time)}`
         );
         window.open(`https://wa.me/${OWNER_PHONE}?text=${message}`, '_blank');
 
@@ -138,6 +154,11 @@ const Booking = () => {
                 Array.from({ length: 24 }).map((_, i) => (
                   <div key={i} style={{ aspectRatio: '1/1', background: 'rgba(255,255,255,0.05)', borderRadius: 12, animation: 'pulse 1.5s infinite ease-in-out' }}></div>
                 ))
+              ) : error ? (
+                <div style={{ gridColumn: '1 / -1', padding: '40px 20px', textAlign: 'center', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '16px', border: '1px solid rgba(239, 68, 68, 0.1)' }}>
+                  <p style={{ color: '#ef4444', fontWeight: 600 }}>{error}</p>
+                  <button onClick={fetchSlots} style={{ marginTop: '15px', background: 'transparent', color: 'var(--primary)', fontWeight: 700, textDecoration: 'underline' }}>Try Again</button>
+                </div>
               ) : (
                 slots.map((slot) => {
                   const isSelected = selectedSlot?.id === slot.id;
@@ -150,7 +171,7 @@ const Booking = () => {
                       onClick={() => setSelectedSlot(slot)}
                       className={`slot ${isBooked ? 'booked' : isSelected ? 'selected' : 'available'}`}
                     >
-                      {slot.time}
+                      {formatAMPM(slot.time)}
                       <span>{isSelected ? 'SELECTED' : slot.status.toUpperCase()}</span>
                     </button>
                   );

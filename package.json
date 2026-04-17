@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"npm:dev:frontend\" \"npm:dev:backend\"",
+    "dev:frontend": "vite",
+    "dev:backend": "node server/index.js",
     "build": "vite build",
     "start": "node server/index.js",
     "preview": "vite preview"
@@ -17,11 +19,15 @@
   "dependencies": {
     "@vitejs/plugin-react": "^6.0.1",
     "axios": "^1.15.0",
+    "concurrently": "^9.2.1",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "lucide-react": "^1.8.0",
     "pg": "^8.20.0",
     "react-router-dom": "^7.14.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1",
     "vite": "^8.0.4"
   }
 }

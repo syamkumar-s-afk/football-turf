@@ -7,6 +7,17 @@ const Admin = ({ adminPass, onLogout }) => {
   const [slots, setSlots] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const formatAMPM = (timeStr) => {
+    if (!timeStr) return '';
+    const [hours, minutes] = timeStr.split(':');
+    let h = parseInt(hours, 10);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    h = h ? h : 12; 
+    return `${h.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+  };
 
   useEffect(() => {
     fetchData();
@@ -14,7 +25,12 @@ const Admin = ({ adminPass, onLogout }) => {
 
   const fetchData = async () => {
     setLoading(true);
-    await Promise.all([fetchSlots(), fetchBookings()]);
+    setError(null);
+    try {
+      await Promise.all([fetchSlots(), fetchBookings()]);
+    } catch (err) {
+      setError('Failed to sync with server. Check database status.');
+    }
     setLoading(false);
   };
 
@@ -109,7 +125,7 @@ const Admin = ({ adminPass, onLogout }) => {
             <tbody>
               {slots.map(slot => (
                 <tr key={slot.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                  <td style={{ padding: '20px 10px', fontWeight: 600 }}>{slot.time}</td>
+                  <td style={{ padding: '20px 10px', fontWeight: 600 }}>{formatAMPM(slot.time)}</td>
                   <td style={{ padding: '20px 10px' }}>
                     <span style={{ 
                       padding: '4px 10px', 
@@ -182,7 +198,7 @@ const Admin = ({ adminPass, onLogout }) => {
                     </td>
                     <td style={{ padding: '20px 10px' }}>
                       <div style={{ fontWeight: 600 }}>{booking.date}</div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{booking.time}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{formatAMPM(booking.time)}</div>
                     </td>
                     <td style={{ padding: '20px 10px', textAlign: 'right' }}>
                         <span style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600 }}>INQUIRY RECEIVED</span>

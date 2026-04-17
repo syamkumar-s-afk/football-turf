@@ -25,3 +25,4 @@ dist-ssr
 
 server/database.sqlite
 scratch/
+.env

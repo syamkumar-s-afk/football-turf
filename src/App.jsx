@@ -46,7 +46,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route 
-              path="/admin.com" 
+              path="/admin-panel" 
               element={
                 adminPass ? 
                 <Admin adminPass={adminPass} onLogout={handleLogout} /> : 
