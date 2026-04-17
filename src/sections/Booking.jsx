@@ -46,9 +46,10 @@ const Booking = () => {
       }
     } catch (err) {
       console.error('Error fetching slots:', err);
-      const msg = err.response?.data?.error || err.response?.data?.dbStatus === 'FAILED' 
-        ? `Database Error: ${err.response.data.error || 'Connection failed'}` 
-        : `Connection Error: ${err.message}${err.response ? ` (Status: ${err.response.status})` : ''}`;
+      const errorData = err.response?.data;
+      const msg = typeof errorData === 'object' 
+        ? `Server Error: ${JSON.stringify(errorData)}` 
+        : `Connection Error: ${err.message}`;
       setError(msg);
     }
     setLoading(false);
