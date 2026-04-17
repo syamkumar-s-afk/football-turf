@@ -48,7 +48,7 @@ const Booking = () => {
       console.error('Error fetching slots:', err);
       const msg = err.response?.data?.error || err.response?.data?.dbStatus === 'FAILED' 
         ? `Database Error: ${err.response.data.error || 'Connection failed'}` 
-        : 'Unable to load slots. Please check your connection or try again later.';
+        : `Connection Error: ${err.message}${err.response ? ` (Status: ${err.response.status})` : ''}`;
       setError(msg);
     }
     setLoading(false);
