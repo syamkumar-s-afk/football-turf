@@ -1,6 +1,4 @@
 import pg from 'pg';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -13,30 +11,52 @@ async function initDb() {
     const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
     const isLocalPostgres = dbUrl && dbUrl.includes('localhost');
 
+    console.log('--- Database Initialization ---');
+    console.log(`Environment: ${isProd ? 'Production/Vercel' : 'Local'}`);
+    console.log(`Connection URL present: ${!!dbUrl}`);
+
     if (isProd || (dbUrl && !isLocalPostgres)) {
-        console.log('Using PostgreSQL Database...');
+        console.log('Target: PostgreSQL');
+        if (!dbUrl) {
+            console.error('CRITICAL: DATABASE_URL is missing in Production!');
+            throw new Error('DATABASE_URL is not configured');
+        }
+
         const pool = new Pool({
             connectionString: dbUrl,
             ssl: isProd ? { rejectUnauthorized: false } : false
         });
 
-        // Test connection
-        await pool.query('SELECT NOW()');
-        
-        // Wrap pool to ensure it returns { rows: [...] }
-        return {
-            query: (text, params) => pool.query(text, params),
-            isPostgres: true
-        };
+        try {
+            console.log('Attempting PostgreSQL connection...');
+            const result = await pool.query('SELECT NOW()');
+            console.log('PostgreSQL Connected Successfully at:', result.rows[0].now);
+            
+            return {
+                query: (text, params) => pool.query(text, params),
+                isPostgres: true
+            };
+        } catch (err) {
+            console.error('PostgreSQL Connection Failed:', err.message);
+            throw err;
+        }
     } else {
-        console.log('Using local SQLite Database...');
+        console.log('Target: Local SQLite');
+        
+        // Lazy load SQLite ONLY when running locally to keep Vercel light
+        console.log('Loading SQLite drivers...');
+        const sqlite3 = (await import('sqlite3')).default;
+        const { open } = await import('sqlite');
+        
         const dbPath = path.join(__dirname, 'database.sqlite');
+        console.log(`SQLite Path: ${dbPath}`);
+        
         const db = await open({
             filename: dbPath,
             driver: sqlite3.Database
         });
 
-        // Initialize SQLite Tables
+        console.log('Initializing SQLite Tables...');
         await db.exec(`
             CREATE TABLE IF NOT EXISTS slots (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,12 +79,10 @@ async function initDb() {
             );
         `);
 
-        // Adapter to make SQLite behave like PG (using $1, $2 placeholders)
+        console.log('SQLite Ready.');
         return {
             query: async (text, params = []) => {
-                // Convert $1, $2 to ? for SQLite
                 const sqliteQuery = text.replace(/\$\d+/g, '?');
-                
                 if (text.trim().toUpperCase().startsWith('SELECT')) {
                     const rows = await db.all(sqliteQuery, params);
                     return { rows };
